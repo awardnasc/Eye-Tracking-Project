@@ -66,7 +66,8 @@ dirs:
 
 raw:
 	$(PYTHON) ./csv2raw.py --indir=$(INDIR) --outdir=$(RAWDIR)
-
+	cd data; cd raw; rm *White*
+	
 #process:
 #	$(PYTHON) ./filter.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
  #                             --imgdir=$(IMGDIR) --dist=$(DIST) \
