@@ -18,19 +18,19 @@ SMOOTH = False
 
 #WIDTH = 1600
 #HEIGHT = 900
-#WIDTH = 1680
-#HEIGHT = 1050
+WIDTH = 1680
+HEIGHT = 1050
 #WIDTH = 2048
 #HEIGHT = 1536
-WIDTH = 1700
-HEIGHT = 2200
+#WIDTH = 1700
+#HEIGHT = 2200
 #HERTZ = 150
 HERTZ = 60
 DIST = 25.59 # 65 cm
 #DIST = 23.62 # 60 cm
 #DIST = 19.68 # 50 cm
 #DIST = 15.74 # 40 cm
-SCREEN = 13
+SCREEN = 22
 
 #XTILES = 4
 #YTILES = 3
@@ -59,7 +59,7 @@ RAWDIR = ./data/raw/
 #all: dirs raw process collate stats
 #all: dirs raw graph
 
-all: dirs raw process
+all: dirs raw process graph
 
 dirs:
 	mkdir -p data
@@ -77,13 +77,13 @@ process:
                               --height=$(HEIGHT) --hertz=$(HERTZ) \
                               --xtiles=$(XTILES) --ytiles=$(YTILES)
 
-#graph:
-#	$(PYTHON) ./graph.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
- #                             --imgdir=$(IMGDIR) --dist=$(DIST) \
-  #                            --screen=$(SCREEN) --width=$(WIDTH) \
-   #                           --height=$(HEIGHT) --hertz=$(HERTZ) \
-    #                          --xtiles=$(XTILES) --ytiles=$(YTILES) \
-     #                         --outdir=$(OUTDIR) --pltdir=$(PLTDIR)
+graph:
+	$(PYTHON) ./graph.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
+                              --imgdir=$(IMGDIR) --dist=$(DIST) \
+                              --screen=$(SCREEN) --width=$(WIDTH) \
+                              --height=$(HEIGHT) --hertz=$(HERTZ) \
+                              --xtiles=$(XTILES) --ytiles=$(YTILES) \
+                              --outdir=$(OUTDIR) --pltdir=$(PLTDIR)
 #	$(PYTHON) ./graph.py --smooth=$(SMOOTH) --indir=$(RAWDIR) --imgdir=$(IMGDIR) --dist=$(DIST) --screen=$(SCREEN) --width=$(WIDTH) --height=$(HEIGHT) --hertz=$(HERTZ) --xtiles=$(XTILES) --ytiles=$(YTILES) --outdir=$(OUTDIR) --pltdir=$(PLTDIR) --image="white-1600x900.png"
 
 #collate:

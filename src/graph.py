@@ -245,10 +245,10 @@ def main(argv):
       stimulus = entry[TASK_ID].replace('\'','')
       type = entry[AOI_LABEL]
 
-      if stimulus == 'p1' or stimulus == 'p3':
-        stimulus = "puntos1016x1536"
-      elif stimulus == 'p2':
-        stimulus = "painting1016x1536"
+      if stimulus == 'Vertical':
+        stimulus = "F pattern resume updated"
+      elif stimulus == 'Horizontal':
+        stimulus = "Z-pattern Resume updated"
 
       x_bl = float(entry[X_BL])
       y_bl = float(entry[Y_BL])
@@ -298,18 +298,15 @@ def main(argv):
 
     # extract stimulus name
     imagebase, ext = os.path.splitext(base.split('_')[1])
-    if imagebase == 'p1':
-      imagebase = "puntos-1680x1050"
+
+    if imagebase == 'Vertical':
+      imagebase = "F pattern resume updated"
       cond = 'p1'
-    elif imagebase == 'p3':
-      imagebase = "puntos-1680x1050"
-      cond = 'p3'
-    elif imagebase == 'p2':
-      imagebase = "painting-1680x1050"
+    elif imagebase == 'Horizontal':
+      imagebase = "Z-pattern Resume updated"
       cond = 'p2'
-    elif imagebase == 'grid':
-      imagebase = "composite-1680x1050"
-      cond = 'grid'
+
+    
     print "Image: ", image, "[", imagebase, "]"
 
     print "subj, cond: ", subj, cond
@@ -318,7 +315,7 @@ def main(argv):
     if(haveimage == True):
       print "Image: ", image
     else:
-      image = '{0}.jpg'.format(os.path.join(imgdir,imagebase))
+      image = '{0}.png'.format(os.path.join(imgdir,imagebase))
       print "Image: ", image, "[", imagebase, "]"
 
     # split filename from extension
