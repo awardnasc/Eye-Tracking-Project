@@ -246,9 +246,9 @@ def main(argv):
       type = entry[AOI_LABEL]
 
       if stimulus == 'Vertical':
-        stimulus = "F pattern resume updated"
+        stimulus = "F pattern resume 1680x1050"
       elif stimulus == 'Horizontal':
-        stimulus = "Z-pattern Resume updated"
+        stimulus = "Z pattern resume 1680x1050"
 
       x_bl = float(entry[X_BL])
       y_bl = float(entry[Y_BL])
@@ -299,10 +299,10 @@ def main(argv):
     # extract stimulus name
     imagebase, ext = os.path.splitext(base.split('_')[1])
     if imagebase == 'Vertical':
-      imagebase = "F pattern resume updated"
+      imagebase = "F pattern resume updated 1680x1050"
       stim = 'p1'
     elif imagebase == 'Horizontal':
-      imagebase = "Z-pattern Resume updated"
+      imagebase = "Z pattern resume updated 1680x1050"
       stim = 'p2'
     print "Image: ", image, "[", imagebase, "]"
 

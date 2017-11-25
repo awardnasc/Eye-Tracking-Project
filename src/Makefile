@@ -14,7 +14,7 @@ R = /usr/local/bin/R
 endif
 
 # use Butterworth?
-SMOOTH = False
+SMOOTH = True
 
 #WIDTH = 1600
 #HEIGHT = 900

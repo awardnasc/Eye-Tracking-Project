@@ -147,10 +147,10 @@ def renderPoints2D(baseName,w,h,points,title,image=None,scale=False,xtiles=4,yti
 #   print "extent=",x0,x1,y0,y1
 #   print "Image mode: ", img.mode
     if img.mode == "L":
-      plt.imshow(np.asarray(img),cmap=pylab.gray(),alpha=0.5,
+      plt.imshow(np.asarray(img),cmap=pylab.gray(),alpha=1,
                  origin='None',aspect='auto',extent=(x0,x1,y0,y1))
     else:
-      plt.imshow(np.asarray(img),alpha=0.5,
+      plt.imshow(np.asarray(img),alpha=1,
                  origin='None',aspect='auto',extent=(x0,x1,y0,y1))
 
   # fill in data points
@@ -225,10 +225,10 @@ def renderFixations(baseName,w,h,screen,viewdist,fixations,title,image=None,lagr
     y1 = y0+imh
 #   print "Image mode: ", img.mode
     if img.mode == "L":
-      plt.imshow(np.asarray(img),cmap=pylab.gray(),alpha=0.5,
+      plt.imshow(np.asarray(img),cmap=pylab.gray(),alpha=1,
                  origin='None',aspect='auto',extent=(x0,x1,y0,y1))
     else:
-      plt.imshow(np.asarray(img),alpha=0.5,
+      plt.imshow(np.asarray(img),alpha=1,
                  origin='None',aspect='auto',extent=(x0,x1,y0,y1))
 
   # fill in data points
