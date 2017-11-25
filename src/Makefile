@@ -18,10 +18,12 @@ SMOOTH = False
 
 #WIDTH = 1600
 #HEIGHT = 900
-WIDTH = 1680
-HEIGHT = 1050
+#WIDTH = 1680
+#HEIGHT = 1050
 #WIDTH = 2048
 #HEIGHT = 1536
+WIDTH = 1700
+HEIGHT = 2200
 #HERTZ = 150
 HERTZ = 60
 DIST = 25.59 # 65 cm
@@ -38,8 +40,8 @@ SCREEN = 13
 #YTILES = 10
 #XTILES = 8
 #YTILES = 5
-XTILES = 4
-YTILES = 2
+XTILES = 2
+YTILES = 9
 
 #INDIR = ../../exp/1680x1050/demo/
 INDIR = ../result/
@@ -57,7 +59,7 @@ RAWDIR = ./data/raw/
 #all: dirs raw process collate stats
 #all: dirs raw graph
 
-all: dirs raw 
+all: dirs raw process
 
 dirs:
 	mkdir -p data
@@ -68,12 +70,12 @@ raw:
 	$(PYTHON) ./csv2raw.py --indir=$(INDIR) --outdir=$(RAWDIR)
 	cd data; cd raw; rm *White*
 	
-#process:
-#	$(PYTHON) ./filter.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
- #                             --imgdir=$(IMGDIR) --dist=$(DIST) \
-  #                            --screen=$(SCREEN) --width=$(WIDTH) \
-   #                           --height=$(HEIGHT) --hertz=$(HERTZ) \
-    #                          --xtiles=$(XTILES) --ytiles=$(YTILES)
+process:
+	$(PYTHON) ./filter.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
+                              --imgdir=$(IMGDIR) --dist=$(DIST) \
+                              --screen=$(SCREEN) --width=$(WIDTH) \
+                              --height=$(HEIGHT) --hertz=$(HERTZ) \
+                              --xtiles=$(XTILES) --ytiles=$(YTILES)
 
 #graph:
 #	$(PYTHON) ./graph.py --smooth=$(SMOOTH) --indir=$(RAWDIR) \
