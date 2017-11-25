@@ -16,10 +16,11 @@ def catCSVFile(infile,df,ct):
   # extract stimulus name and subj id
   stimulus = base.split('_')[1].split('-')[0]
   subj = base.split('_')[0]
-  if stimulus == 'p1' or stimulus == 'p3':
-    stimulus = "puntos1016x1536"
-  elif stimulus == 'p2':
-    stimulus = "painting1016x1536"
+
+  if stimulus == 'Vertical':
+    stimulus = "F pattern resume 1680x1050"
+  elif stimulus == 'Horizontal':
+    stimulus = "Z pattern resume 1680x1050"
   print "stim = ", stimulus
   print "subj = ", subj
 
