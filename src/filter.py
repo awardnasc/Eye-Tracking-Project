@@ -21,7 +21,7 @@ import plotter
 import point
 from point import Point
 
-from scipy import spatial 
+from scipy import spatial
 
 def usage():
   print "Usage: python graph.py " \
@@ -120,7 +120,7 @@ def main(argv):
   pltdir = "./plots"
 
   # Checked beforehand so that custom parameters could still be used...
-  # Check if smooth is an option. We will set default parameters based on 
+  # Check if smooth is an option. We will set default parameters based on
   # value. If others are provided via the command line, we will use them.
   try:
       arg = opts[[t[0] for t in opts].index('--smooth')][1]
@@ -188,7 +188,7 @@ def main(argv):
     else:
       sys.argv[1:]
 
-  aoidir = "../../exp/jaconde/"
+  aoidir = "../stimulus/"
 
   # get .raw input files to process
   if os.path.isdir(indir):
@@ -330,7 +330,7 @@ def main(argv):
                             subj,stim,width,height,xtiles,ytiles)
     scanpath.ann("%s/%s-ann%s" % (outdir,filename,".csv"),\
                             subj,stim,stim,width,height)
-
+    scanpath.dumpFixatedAOIs("%s/%s-fxtn-aois%s" % (outdir,filename,".csv"),width,height,aoidict,key)
     scanpath.dumpDAT("%s/%s%s" % (outdir,filename,".dat"),width,height)
 #   scanpath.dumpXML("%s/%s%s" % (outdir,filename,".xml"),width,height)
 

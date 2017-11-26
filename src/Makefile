@@ -10,7 +10,7 @@ ifeq ($(UNAME),Darwin)
 #PYTHON = /usr//bin/python
 #PYTHON = /sw//bin/python2.7
 PYTHON = python2
-R = /usr/local/bin/R
+R = /usr/bin/R
 endif
 
 # use Butterworth?
@@ -30,7 +30,7 @@ DIST = 25.59 # 65 cm
 #DIST = 23.62 # 60 cm
 #DIST = 19.68 # 50 cm
 #DIST = 15.74 # 40 cm
-SCREEN = 22
+SCREEN = 13
 
 #XTILES = 4
 #YTILES = 3
@@ -56,10 +56,10 @@ RAWDIR = ./data/raw/
 
 #all: dirs raw process graph
 #all: dirs raw process collate
-#all: dirs raw process collate stats
+all: dirs raw process
 #all: dirs raw graph
 
-all: dirs raw process collate stats
+#all: dirs raw process graph
 
 dirs:
 	mkdir -p data
@@ -92,9 +92,9 @@ collate:
 	$(PYTHON) ./collate-aois.py
 
 stats:
-	$(R) --vanilla --args $(XTILES) $(YTILES) < tm.R > tm.out
-	#$(R) --vanilla < anns.R > anns.out
-	#$(R) --vanilla < fxtn-aois.R > fxtn-aois.out
+	#R --vanilla --args $(XTILES) $(YTILES) < tm.R > tm.out
+	#R --vanilla < anns.R > anns.out
+	R --vanilla < fxtn-aois.R > fxtn-aois.out
 
 clean:
 	rm -rf *.pyc
