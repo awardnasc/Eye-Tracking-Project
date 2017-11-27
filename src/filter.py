@@ -330,9 +330,10 @@ def main(argv):
                             subj,stim,width,height,xtiles,ytiles)
     scanpath.ann("%s/%s-ann%s" % (outdir,filename,".csv"),\
                             subj,stim,stim,width,height)
-    scanpath.dumpFixatedAOIs("%s/%s-fxtn-aois%s" % (outdir,filename,".csv"),width,height,aoidict,key)
+    # scanpath.dumpFixatedAOIs("%s/%s-fxtn-aois%s" % (outdir,filename,".csv"),width,height,aoidict,key)
     scanpath.dumpDAT("%s/%s%s" % (outdir,filename,".dat"),width,height)
 #   scanpath.dumpXML("%s/%s%s" % (outdir,filename,".xml"),width,height)
+    # scanpath.entropy("%s/%s-ent%s" % (outdir,filename,".csv"),subj,stim,width,height)
 
     print " "
     del scanpath

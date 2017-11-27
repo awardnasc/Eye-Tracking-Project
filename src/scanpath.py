@@ -6,6 +6,7 @@
 import sys
 import os
 import math
+from PIL import Image
 #import xml.etree.ElementTree as ET
 from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import tostring
@@ -72,7 +73,7 @@ class Scanpath:
       self.parseClearViewEFD()
     else:
       print 'Unsupported file extension! (%s)' % (self.fileExtension)
-			
+
   # parse fxd (x y d) fixation file
   def parseFXD(self):
     try:
@@ -142,7 +143,7 @@ class Scanpath:
       x, y = self.clamp(x, y)
 
       self.gazepoints.append(Point(x,y,t,err))
-      
+
   # print "Read: ", len(self.gazepoints), "points"
 
   # parse a mirametrix source file
@@ -151,16 +152,16 @@ class Scanpath:
       #print "Parsing: ",self.fileName
     tree = ET.parse(self.fileName)
       #print "tree = %s" % tree
- 
+
     # should be something like Experiment, {}
     root = tree.getroot()
       #print "root.tag = %s, root.attrib = %s" % (root.tag, root.attrib)
- 
+
     for rec in root:
       gazeattr = rec.attrib
 
       bogus = False
- 
+
       t = float(gazeattr['TIME'])
       xl = float(gazeattr['LPOGX'].split()[0])
       yl = float(gazeattr['LPOGY'].split()[0])
@@ -179,9 +180,9 @@ class Scanpath:
         x, y = self.clamp(x, y)
 
         self.gazepoints.append(Point(x,y,t,"None"))
-     
+
     # print "Read: ", len(self.gazepoints), "points"
- 
+
   # dump out XML
   def dumpXML(self,fileName,w,h):
       #print "Dumping ", fileName
@@ -235,7 +236,7 @@ class Scanpath:
       outfile.write(str)
     outfile.close()
 
-  
+
   def smooth(self,fileName,w,h,herz,sfdegree,sfcutoff, smooth):
 
     if smooth:
@@ -554,7 +555,7 @@ class Scanpath:
   def entropy(self,fileName,subj,cond,w,h):
 
     outfile = open(fileName,'w')
-    str = "subj,cond,entropy\n"
+    str = "subj,cond,entropy,spectral entropy,uncertainty\n"
     outfile.write(str)
 
     # diagonal
@@ -642,7 +643,9 @@ class Scanpath:
     uncertainty = (entropy + spectral_entropy)/2.0
 
     # print entropy
-    str = "%s,%s,%s,%f,%f,%f\n" % (subj, cond, stim, entropy, spectral_entropy, uncertainty)
+    str = "%s,%s,%f,%f,%f\n" % (subj, cond, entropy, spectral_entropy, uncertainty)
+    # str = "%s,%s,%s,%f,%f,%f\n" % (subj, cond, stim, entropy, spectral_entropy, uncertainty)
+
     outfile.write(str)
     outfile.close()
 

@@ -56,8 +56,9 @@ RAWDIR = ./data/raw/
 
 #all: dirs raw process graph
 #all: dirs raw process collate
-all: dirs raw process
+# all: dirs raw process graph collate stat
 #all: dirs raw graph
+all: stats
 
 #all: dirs raw process graph
 
@@ -92,12 +93,13 @@ collate:
 	$(PYTHON) ./collate-aois.py
 
 stats:
-	#R --vanilla --args $(XTILES) $(YTILES) < tm.R > tm.out
-	#R --vanilla < anns.R > anns.out
+	R --vanilla --args $(XTILES) $(YTILES) < tm.R > tm.out
+	R --vanilla < anns.R > anns.out
 	R --vanilla < fxtn-aois.R > fxtn-aois.out
 
 clean:
 	rm -rf *.pyc
+	rm -rf *.csv
 	rm -rf plots/
 	rm -rf data/
 	rm -rf *.pdf
