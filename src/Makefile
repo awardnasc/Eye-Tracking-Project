@@ -30,7 +30,7 @@ DIST = 25.59 # 65 cm
 #DIST = 23.62 # 60 cm
 #DIST = 19.68 # 50 cm
 #DIST = 15.74 # 40 cm
-SCREEN = 13
+SCREEN = 22
 
 #XTILES = 4
 #YTILES = 3
@@ -58,7 +58,7 @@ RAWDIR = ./data/raw/
 #all: dirs raw process collate
 # all: dirs raw process graph collate stat
 #all: dirs raw graph
-all: stats
+all:graph
 
 #all: dirs raw process graph
 

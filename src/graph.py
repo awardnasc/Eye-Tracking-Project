@@ -21,7 +21,7 @@ import plotter
 import point
 from point import Point
 
-from scipy import spatial 
+from scipy import spatial
 
 def usage():
   print "Usage: python graph.py " \
@@ -120,7 +120,7 @@ def main(argv):
   pltdir = "./plots"
 
   # Checked beforehand so that custom parameters could still be used...
-  # Check if smooth is an option. We will set default parameters based on 
+  # Check if smooth is an option. We will set default parameters based on
   # value. If others are provided via the command line, we will use them.
   try:
       arg = opts[[t[0] for t in opts].index('--smooth')][1]
@@ -188,7 +188,7 @@ def main(argv):
     else:
       sys.argv[1:]
 
-  aoidir = "../../exp/jaconde/"
+  aoidir = "../stimulus/"
 
   # get .raw input files to process
   if os.path.isdir(indir):
@@ -246,9 +246,9 @@ def main(argv):
       type = entry[AOI_LABEL]
 
       if stimulus == 'Vertical':
-        stimulus = "F pattern resume 1680x1050"
+        stimulus = "F_pattern_resume_1680x1050"
       elif stimulus == 'Horizontal':
-        stimulus = "Z pattern resume 1680x1050"
+        stimulus = "Z_pattern_resume_1680x1050"
 
       x_bl = float(entry[X_BL])
       y_bl = float(entry[Y_BL])
@@ -300,13 +300,13 @@ def main(argv):
     imagebase, ext = os.path.splitext(base.split('_')[1])
 
     if imagebase == 'Vertical':
-      imagebase = "F pattern resume 1680x1050"
+      imagebase = "F_pattern_resume_1680x1050"
       cond = 'p1'
     elif imagebase == 'Horizontal':
-      imagebase = "Z pattern resume 1680x1050"
+      imagebase = "Z_pattern_resume_1680x1050"
       cond = 'p2'
 
-    
+
     print "Image: ", image, "[", imagebase, "]"
 
     print "subj, cond: ", subj, cond
@@ -329,8 +329,8 @@ def main(argv):
                             width,height,T)
     scanpath.amfoc("%s/%s-amfo%s" % (outdir,filename,".dat"),\
                             width,height)
-    scanpath.gridify("%s/%s-aois%s" % (outdir,filename,".csv"),\
-                            subj,cond,width,height,xtiles,ytiles)
+#    scanpath.gridify("%s/%s-aois%s" % (outdir,filename,".csv"),\
+#                            subj,cond,width,height,xtiles,ytiles)
 
     scanpath.dumpDAT("%s/%s%s" % (outdir,filename,".dat"),width,height)
 #   scanpath.dumpXML("%s/%s%s" % (outdir,filename,".xml"),width,height)
@@ -378,7 +378,7 @@ def main(argv):
 #                          width, height, \
 #                          scanpath.acceleration, 'x',\
 #                          "Twice Differentiated gaze point data", False)
-    
+
 #    plotter.renderPoints1D("%s/%s-%s" % (pltdir,filename,"dfft"),\
 #                          width,height,\
 #                          scanpath.velocity,'y',\
@@ -400,31 +400,31 @@ def main(argv):
                             lagrange,\
                             xtiles,ytiles)
 
-#   plotter.renderAOIs("%s/%s-%s" % (pltdir,filename,"aois"),\
-#                           width,height,\
-#                           aoidict,\
-#                           imagebase,\
-#                           "AOIs",\
-#                           image,\
-#                           xtiles,ytiles)
+    plotter.renderAOIs("%s/%s-%s" % (pltdir,filename,"aois"),\
+                            width,height,\
+                            aoidict,\
+                            imagebase,\
+                            "AOIs",\
+                            image,\
+                            xtiles,ytiles)
 
-#   plotter.renderAOIFixations("%s/%s-%s" % (pltdir,filename,"aoi-fxtn"),\
-#                           width,height,\
-#                           scanpath.fixations,\
-#                           aoidict,\
-#                           imagebase,\
-#                           "AOI Fixations",\
-#                           image,\
-#                           xtiles,ytiles)
+    plotter.renderAOIFixations("%s/%s-%s" % (pltdir,filename,"aoi-fxtn"),\
+                            width,height,\
+                            scanpath.fixations,\
+                            aoidict,\
+                            imagebase,\
+                            "AOI Fixations",\
+                            image,\
+                            xtiles,ytiles)
 
-#   plotter.renderFixatedAOIs("%s/%s-%s" % (pltdir,filename,"fxtn-aoi"),\
-#                           width,height,\
-#                           scanpath.fixations,\
-#                           aoidict,\
-#                           imagebase,\
-#                           "AOI Fixations",\
-#                           image,\
-#                           xtiles,ytiles)
+    plotter.renderFixatedAOIs("%s/%s-%s" % (pltdir,filename,"fxtn-aoi"),\
+                            width,height,\
+                            scanpath.fixations,\
+                            aoidict,\
+                            imagebase,\
+                            "AOI Fixations",\
+                            image,\
+                            xtiles,ytiles)
 
 #   plotter.renderAmfocFixations("%s/%s-%s" % (pltdir,filename,"affx"),\
 #                           width,height,\

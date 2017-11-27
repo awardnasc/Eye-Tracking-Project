@@ -1,5 +1,4 @@
 #!/usr/bin/env python2
-
 # was using /sw/bin/python2.7 -tt
 # filter.py
 # this file is the driver for the python analysis script
@@ -10,28 +9,22 @@ import os
 import getopt
 import glob
 import numpy as np
-import math
 
 # local includes
 from scanpath import Scanpath
 from aoi import AOI
-from lagrange import Lagrange
 
 import plotter
-import point
-from point import Point
-
-from scipy import spatial
 
 def usage():
-  print "Usage: python graph.py " \
+  print "Usage: python filter.py " \
         " --width=? --height=? --screen=? --dist=?" \
         " --xtiles=? --ytiles=?\n" \
-        " --indir=? --imgdir=? --outdir=? --pltdir=?" \
-        " --file=?\n"\
-        " --hertz=?\n"\
-        " --sfdegree=? --sfcutoff=?\n"\
-        " --dfdegree=? --dfwidth=?\n"\
+        " --indir=? --imgdir=? --outdir=? --pltdir=?\n" \
+        " --file=?\n" \
+        " --hertz=?\n" \
+        " --sfdegree=? --sfcutoff=?\n" \
+        " --dfdegree=? --dfwidth=?\n" \
         " --vt=?\n" \
         " --smooth=?\n"\
         "   width, height: screen dimensions (in pixels)\n" \
@@ -44,10 +37,10 @@ def usage():
         "   outdir: a directory containing output files\n" \
         "   pltdir: a directory containing plot files\n" \
         "   file: a single file to process\n" \
-        "   image: a single image to use as background\n" \
         "   hertz: the sampling rate of the data\n" \
         "   sfdegree: butterworth filter smoothing degree \n" \
         "   sfcutoff: butterworth filter smoothing cutoff \n" \
+        "   dfdegree: savitzky-golay filter degree \n" \
         "   dfwidth: savitzky-golay filter width \n" \
         "   vt: min velocity for change to be a saccade\n"\
         "   smooth: True enables butterworth smoothing\n"
@@ -59,12 +52,13 @@ def main(argv):
   try:
     opts, args = getopt.getopt(argv, '', \
                  ['width=','height=',\
-                  'hertz=',\
                   'screen=','dist=',\
                   'xtiles=','ytiles=',\
                   'indir=','imgdir=','outdir=','pltdir=',\
-                  'file=','image=', 'hertz=', 'sfdegree=', 'sfcutoff=',\
-                  'vt=', 'smooth='])
+                  'file=',\
+                  'hertz=','sfdegree=','sfcutoff=',\
+                  'dfdegree=','dfwidth=',\
+                  'vt=','smooth='])
   except getopt.GetoptError, err:
     usage()
     exit()
@@ -72,8 +66,8 @@ def main(argv):
   # Enable/disable butterworth smoothing.
   smooth = False
   # screen height in pixels
-  width = 1600
-  height = 900
+  width = 1680
+  height = 1050
   # screen diagonal (in inches)
   screen = 17
   # viewing distance (in inches)
@@ -85,19 +79,19 @@ def main(argv):
 # sfcutoff = 1.15 # more smooth
 # sfcutoff = 1.65
 # sfcutoff = 1.85
-#  sfcutoff = 2.15 # last used
+# sfcutoff = 2.15 # last used
 # sfcutoff = 2.35
 # sfcutoff = 3.15
 # sfcutoff = 4.15
   sfcutoff = 6.15 # less smooth
   # differentiation (SG) filter parameters: width, degree, order
-  # 5, 3 for no smoothing, 3, 2 for smoothing
-  if (smooth):
-    dfwidth = 3
-    dfdegree = 2
+# dfwidth = 5
+  if smooth:
+      dfwidth = 3
+      dfdegree = 2
   else:
-    dfwidth = 5
-    dfdegree = 3
+      dfwidth = 5
+      dfdegree = 3
   dfo = 1
   # velocity threshold
 # T = 5.0  # more fixations
@@ -119,34 +113,31 @@ def main(argv):
   outdir = "./data"
   pltdir = "./plots"
 
-  # Checked beforehand so that custom parameters could still be used...
-  # Check if smooth is an option. We will set default parameters based on
+  # checkedbeforehand so that custom parameters could still be used...
+  # check if smooth is an option. We will set default parameters based on
   # value. If others are provided via the command line, we will use them.
   try:
-      arg = opts[[t[0] for t in opts].index('--smooth')][1]
-      if arg.lower() == 'true':
-          smooth = True
-      elif arg.lower() == 'false':
-          smooth = False
-      else:
-          print "Warning, invalid smooth value. Assuming default."
-      if (smooth):
-        dfwidth = 3
-        dfdegree = 2
-      else:
-        dfwidth = 5
-        dfdegree = 3
+    arg = opts[[t[0] for t in opts].index('--smooth')][1]
+    if arg.lower() == 'true':
+        smooth = True
+    elif arg.lower() == 'false':
+        smooth = False
+    else:
+        print "Warning, invalid smooth value. Assuming default."
+    if (smooth):
+      dfwidth = 3
+      dfdegree = 2
+    else:
+      dfwidth = 5
+      dfdegree = 3
   except Exception as e:
     print e
     sys.exit()
     pass
 
-  dfwidth = 3
-  dfdegree = 3
-
   for opt,arg in opts:
     opt = opt.lower()
-    if(opt != '--file' and opt != '--image'):
+    if(opt != '--file'):
       arg = arg.lower()
 
     if opt == '--indir':
@@ -155,8 +146,6 @@ def main(argv):
       imgdir = arg
     elif opt == '--outdir':
       outdir = arg
-    elif opt == '--pltdir':
-      pltdir = arg
     elif opt == '--width':
       width = arg
     elif opt == '--height':
@@ -171,8 +160,6 @@ def main(argv):
       ytiles = int(arg)
     elif opt == '--file':
       file = arg
-    elif opt == '--image':
-      image = arg
     elif opt == '--hertz':
       herz = float(arg)
     elif opt == '--sfdegree':
@@ -197,14 +184,6 @@ def main(argv):
   # if user specified --file="..." then we use that as the only one to process
   if(file != None and os.path.isfile(file)):
     files = [file]
-
-  # check to see if use specified image, if so, then don't compose filename
-  # every time through loop; same image will be used (calibration image
-  # presumably)...kind of a hack, but WTF...
-  haveimage = False
-  if(image != None and os.path.isdir(imgdir)):
-    image = os.path.join(imgdir,image)
-    haveimage = True
 
   # process AOI file
   aoifile = aoidir + "aoi_definition.csv"
@@ -246,9 +225,10 @@ def main(argv):
       type = entry[AOI_LABEL]
 
       if stimulus == 'Vertical':
-        stimulus = "F pattern resume 1680x1050"
+       stimulus = "F_pattern_resume_1680x1050"
       elif stimulus == 'Horizontal':
-        stimulus = "Z pattern resume 1680x1050"
+       stimulus = "Z_pattern_resume_1680x1050"
+
 
       x_bl = float(entry[X_BL])
       y_bl = float(entry[Y_BL])
@@ -284,8 +264,6 @@ def main(argv):
     for aoi in aoidict[key]:
       aoi.dump()
 
-  lagrange = Lagrange(int(width),int(height))
-
   for file in files:
     scanpath = Scanpath()
     scanpath.parseFile(file,width,height,herz)
@@ -294,48 +272,47 @@ def main(argv):
 
     print "Processing: ", file, "[", base, "]"
 
-    subj, ext = os.path.splitext(base.split('_')[0])
-
     # extract stimulus name
     imagebase, ext = os.path.splitext(base.split('_')[1])
     if imagebase == 'Vertical':
-      imagebase = "F pattern resume updated 1680x1050"
-      stim = 'p1'
+		imagebase = "F_pattern_resume_1680x1050"
     elif imagebase == 'Horizontal':
-      imagebase = "Z pattern resume updated 1680x1050"
-      stim = 'p2'
+		imagebase = "Z_pattern_resume_1680x1050"
+
     print "Image: ", image, "[", imagebase, "]"
-
-    print "subj, stim: ", subj, stim
-
-    # create filename of corresponding image
-    if(haveimage == True):
-      print "Image: ", image
-    else:
-      image = '{0}.jpg'.format(os.path.join(imgdir,imagebase))
-      print "Image: ", image, "[", imagebase, "]"
 
     # split filename from extension
     filename, ext = os.path.splitext(base)
 
+    print "base, filename, ext: ", base, filename, ext
+    subj = filename.split('_')[0]
+    stim = filename.split('_')[1]
+    cond = "test"
+    print "subj, stim, cond: ", \
+           subj, stim, cond
+
     scanpath.smooth("%s/%s-smth%s" % (outdir,filename,".dat"),\
-                    width,height,herz,sfdegree,sfcutoff, smooth)
+                            width,height,herz,sfdegree,sfcutoff,smooth)
     scanpath.differentiate("%s/%s-diff%s" % (outdir,filename,".dat"),\
                             width,height,screen,dist,herz,dfwidth,dfdegree,dfo)
     scanpath.threshold("%s/%s-fxtn%s" % (outdir,filename,".dat"),\
                             width,height,T)
     scanpath.amfoc("%s/%s-amfo%s" % (outdir,filename,".dat"),\
                             width,height)
-    scanpath.gridify("%s/%s-aois%s" % (outdir,filename,".csv"),\
-                            subj,stim,width,height,xtiles,ytiles)
+ #  scanpath.gridify("%s/%s-aois%s" % (outdir,filename,".csv"),\
+ #                          subj,cond,width,height,xtiles,ytiles)
     scanpath.ann("%s/%s-ann%s" % (outdir,filename,".csv"),\
-                            subj,stim,stim,width,height)
-    # scanpath.dumpFixatedAOIs("%s/%s-fxtn-aois%s" % (outdir,filename,".csv"),width,height,aoidict,key)
+                            subj,cond,stim,width,height)
+    scanpath.dumpFixatedAOIs("%s/%s-fxtn-aoi%s" % (outdir,filename,".csv"),\
+                            width,height,\
+                            aoidict,\
+                            imagebase)
+
     scanpath.dumpDAT("%s/%s%s" % (outdir,filename,".dat"),width,height)
-#   scanpath.dumpXML("%s/%s%s" % (outdir,filename,".xml"),width,height)
-    # scanpath.entropy("%s/%s-ent%s" % (outdir,filename,".csv"),subj,stim,width,height)
+ #  scanpath.dumpXML("%s/%s%s" % (outdir,filename,".xml"),width,height)
 
     print " "
+
     del scanpath
 
 if __name__ == "__main__":
